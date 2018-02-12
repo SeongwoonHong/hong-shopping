@@ -20,7 +20,7 @@ export class ProductFormComponent implements OnInit {
     private categoryService: CategoryService,
     private productService: ProductService) {
     // if we set it to private, we can use it in the class.
-    this.categories$ = categoryService.getCategories();
+    this.categories$ = categoryService.getAll();
     this.id = this.route.snapshot.paramMap.get('id');
     if (this.id) {
       this.productService.get(this.id).take(1).subscribe(p => this.product = p);
