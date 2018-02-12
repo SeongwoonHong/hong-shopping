@@ -13,7 +13,7 @@ import 'rxjs/add/operator/take'; // take operator we can take only 1 value from 
 export class ProductFormComponent implements OnInit {
   categories$;
   product = {};
-
+  id;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -21,17 +21,28 @@ export class ProductFormComponent implements OnInit {
     private productService: ProductService) {
     // if we set it to private, we can use it in the class.
     this.categories$ = categoryService.getCategories();
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.productService.get(id).take(1).subscribe(p => this.product = p);
+    this.id = this.route.snapshot.paramMap.get('id');
+    if (this.id) {
+      this.productService.get(this.id).take(1).subscribe(p => this.product = p);
     }
   }
 
   save(product) {
-    this.productService.create(product);
+    if (this.id) {
+      this.productService.update(this.id, product);
+    } else {
+      this.productService.create(product);
+    }
+
     this.router.navigate(['/admin/products']);
   }
 
+  delete() {
+    if (confirm('Are you sure you want to delete this product?')) {
+      this.productService.delete(this.id);
+      this.router.navigate(['/admin/products']);
+    }
+  }
   ngOnInit() {
   }
 
